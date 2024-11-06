@@ -13,7 +13,7 @@ def test_cannot_signup_with_existing_username(driver):
                                          "something18943@company.net",
                                          "Password498321")
     page.check_if_page_is_open()
-    page.check_if_text_is_present_on_registration_form( "Имя пользователя уже занято")
+    page.check_if_text_is_present_on_registration_form("Имя пользователя уже занято")
 
 
 def test_cannot_signup_without_consent_checkbox_checked(driver):
@@ -30,7 +30,8 @@ def test_cannot_signup_without_consent_checkbox_checked(driver):
 @pytest.mark.parametrize("username, email, password",
                          [("user123573", "email@company.net", ""),
                           ("user123573", "", "password"),
-                          ("", "email@company.net", "password")])
+                          ("", "email@company.net", "password")],
+                         ids=['No password', 'No email', 'No username'])
 def test_registration_fields_are_required(driver, username, email, password):
     page = RegistrationPage(driver)
     page.open()
@@ -43,8 +44,10 @@ def test_registration_fields_are_required(driver, username, email, password):
 # в настоящее время на сайте нет ограничения на максимальную длину поля email
 @pytest.mark.parametrize("username, email, password, referral_code, expected_message",
                          [("a" * 33, "email@company.net", "Password123", "", "Допустимые символы (от 6 до 32)"),
-                          ("user123573", "email@company.net", "x" * 65, "", "Пароль должен содержать от 8 до 64 символов"),
-                          ("user123573", "email@company.net", "Password123", "123456789", "Неверный формат ссылки")])
+                          ("user123573", "email@company.net", "x" * 65, "",
+                           "Пароль должен содержать от 8 до 64 символов"),
+                          ("user123573", "email@company.net", "Password123", "123456789", "Неверный формат ссылки")],
+                         ids=["Long username", "Long password", "Long referral code"])
 def test_registration_fields_have_maximal_length(driver, username, email, password, referral_code, expected_message):
     page = RegistrationPage(driver)
     page.open()
@@ -55,9 +58,11 @@ def test_registration_fields_have_maximal_length(driver, username, email, passwo
 
 @pytest.mark.parametrize("username, email, password, referral_code, expected_message",
                          [("abcde", "email@company.net", "Password123", "", "Допустимые символы (от 6 до 32)"),
-                          ("user123573", "email@company.net", "1234567", "", "Пароль должен содержать минимум 8 символов"),
-                          ("user123573", "email@company.net", "Password123", "123", "Неверный формат ссылки")])
-def test_registration_fields_have_minimal_length(driver, username, email, password,referral_code, expected_message):
+                          ("user123573", "email@company.net", "1234567", "",
+                           "Пароль должен содержать минимум 8 символов"),
+                          ("user123573", "email@company.net", "Password123", "123", "Неверный формат ссылки")],
+                         ids=["Short username", "Short password", "Short referral code"])
+def test_registration_fields_have_minimal_length(driver, username, email, password, referral_code, expected_message):
     page = RegistrationPage(driver)
     page.open()
     page.loginByUsernameEmailAndPassword(username, email, password)

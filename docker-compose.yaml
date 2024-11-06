@@ -1,0 +1,22 @@
+services:
+  test_run:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - allure_volume:/docker/allure_results
+    command: ["pytest", "-v", "tests", "--alluredir=allure_results"]
+
+  allure:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+     - "9092:9092"
+    volumes:
+       - allure_volume:/docker/allure_results
+    command: ["allure", "serve", "allure_results", "--port", "9092"]
+
+volumes:
+    allure_volume:
+        external: false
